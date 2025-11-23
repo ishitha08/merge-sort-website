@@ -1,125 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Merge Sort Visualization</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #fdeaff; /* pastel pink */
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background: linear-gradient(90deg, #ffd6ff, #caffff); /* pastel pink + blue */
-            padding: 30px;
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4b4b4b;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
-        h2 {
-            color: #555;
-        }
-        .array-box {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        .elem {
-            background: #ffe8f8; /* pastel box */
-            border: 2px solid #ffb3e6;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: bold;
-            min-width: 40px;
-            text-align: center;
-            transition: 0.3s;
-        }
-        .split {
-            border-color: #b3e6ff;
-            background: #e8f8ff;
-        }
-        pre {
-            background: #fff0fa;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ffd0ef;
-            overflow-x: auto;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merge Sort — Advanced Visualizer</title>
+  <style>
+    :root{
+      --bg1:#fff8fb; /* very light pink */
+      --accent1:#ffd6e8; /* pastel pink */
+      --accent2:#d6f6ff; /* pastel blue */
+      --card:#ffffff;
+      --text:#333;
+      --muted:#6b6b6b;
+      --accent-border:#ffb8dc;
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, Arial; margin:0; background:linear-gradient(180deg,var(--bg1),#f8fdff); color:var(--text)}
+    header{padding:22px 18px; text-align:center; background:linear-gradient(90deg,#ffe6f5,#e6fbff); box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+    header h1{margin:0; font-size:1.5rem}
+    .wrap{max-width:1100px;margin:28px auto;padding:18px}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:20px}
+
+    /* Left area (visualizer) */
+    .panel{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 6px 20px rgba(47,63,84,0.06)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    button{background:#fff;border:1px solid var(--accent-border);padding:8px 12px;border-radius:10px;cursor:pointer}
+    button.primary{background:linear-gradient(90deg,#ffd6ff,#caffff);border:none}
+    button:disabled{opacity:0.5;cursor:not-allowed}
+    input[type=range]{width:160px}
+
+    /* array display */
+    .array-row{display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-end;justify-content:center;padding:18px}
+    .bar{min-width:44px;height:48px;background:var(--accent1);border:2px solid #ffbfe0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all 300ms ease}
+    .bar.blue{background:var(--accent2);border-color:#bfeaff}
+    .bar.small{height:32px;min-width:36px}
+    .highlight{box-shadow:0 8px 20px rgba(0,0,0,0.08);transform:translateY(-8px)}
+
+    /* pseudocode */
+    .pseudocode{font-family:monospace;background:#fff0fa;padding:12px;border-radius:10px;border:1px solid #ffd0ef;overflow:auto}
+    .code-line{padding:6px 8px;border-left:3px solid transparent}
+    .code-line.active{background:#fff5fb;border-left-color:#ff99d1}
+    .small{font-size:0.9rem;color:var(--muted)}
+
+    /* timeline */
+    .timeline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:10px}
+    .step-pill{padding:6px 8px;border-radius:999px;background:#fff;border:1px solid #eee}
+
+    footer{margin-top:12px;text-align:center;color:var(--muted);font-size:0.9rem}
+
+    /* layout for merge temp */
+    .merge-area{display:flex;gap:10px;align-items:center;justify-content:center;padding:10px}
+    .temp-slot{min-width:36px;min-height:36px;border-radius:8px;border:2px dashed #f0c;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.6)}
+
+    /* responsive */
+    @media (max-width:980px){.grid{grid-template-columns:1fr}.panel{margin-bottom:16px}}
+  </style>
 </head>
 <body>
-    <header>Merge Sort Algorithm</header>
-    <div class="container">
-        <h2>What is Merge Sort?</h2>
-        <p>Merge Sort is a <b>Divide and Conquer</b> algorithm that splits an array into smaller halves, sorts them individually, and then merges them back together. It is efficient and stable with a time complexity of <b>O(n log n)</b>.</p>
-
-        <h2>Visualization</h2>
-        <p>Example array being sorted:</p>
-
-        <div class="array-box">
-            <div class="elem">8</div>
-            <div class="elem">3</div>
-            <div class="elem">5</div>
-            <div class="elem">2</div>
-            <div class="elem">9</div>
-            <div class="elem">1</div>
+  <header>
+    <h1>Merge Sort — Advanced Visualizer (Pastel Theme)</h1>
+    <div class="small">Shows pseudocode highlighting, step-by-step data changes and animations. For team project — ready for GitHub Pages.</div>
+  </header>
+  <main class="wrap">
+    <div class="grid">
+      <section class="panel" id="visualPanel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div><strong>Array Visualizer</strong><div class="small">Split → sort → merge (click Play or Step)</div></div>
+          <div class="controls">
+            <button id="btnPrev">⟨ Prev</button>
+            <button id="btnPlay" class="primary">Play ▶</button>
+            <button id="btnNext">Next ⟩</button>
+            <button id="btnReset">Reset</button>
+            <label class="small">Speed</label>
+            <input id="speed" type="range" min="100" max="1200" value="450">
+          </div>
         </div>
 
-        <p>After splitting (Divide step):</p>
-        <div class="array-box">
-            <div class="elem split">8</div>
-            <div class="elem split">3</div>
-            <div class="elem split">5</div>
-            <div class="elem split">2</div>
-            <div class="elem split">9</div>
-            <div class="elem split">1</div>
+        <div id="arrayArea" class="array-row" aria-live="polite"></div>
+
+        <div id="mergeArea" class="merge-area" style="margin-top:10px"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <div class="small">Current Step: <span id="stepIndex">0</span> / <span id="stepTotal">0</span></div>
+          <div class="timeline" id="timeline"></div>
         </div>
 
-        <h2>Pseudocode</h2>
-        <pre>
-MergeSort(arr):
-    if size of arr <= 1:
+      </section>
+
+      <aside class="panel">
+        <div style="margin-bottom:12px"><strong>Pseudocode</strong></div>
+        <div class="pseudocode" id="pseudocode">
+          <div class="code-line" data-line="0">function MergeSort(arr):</div>
+          <div class="code-line" data-line="1">&nbsp;&nbsp;if length(arr) ≤ 1: return arr</div>
+          <div class="code-line" data-line="2">&nbsp;&nbsp;mid = length(arr) // 2</div>
+          <div class="code-line" data-line="3">&nbsp;&nbsp;left = MergeSort(arr[0:mid])</div>
+          <div class="code-line" data-line="4">&nbsp;&nbsp;right = MergeSort(arr[mid:])</div>
+          <div class="code-line" data-line="5">&nbsp;&nbsp;return Merge(left, right)</div>
+          <div style="height:10px"></div>
+          <div class="code-line" data-line="6">function Merge(left, right):</div>
+          <div class="code-line" data-line="7">&nbsp;&nbsp;i = 0; j = 0; result = []</div>
+          <div class="code-line" data-line="8">&nbsp;&nbsp;while i &lt; len(left) and j &lt; len(right):</div>
+          <div class="code-line" data-line="9">&nbsp;&nbsp;&nbsp;&nbsp;if left[i] ≤ right[j]: append left[i] to result; i++</div>
+          <div class="code-line" data-line="10">&nbsp;&nbsp;&nbsp;&nbsp;else append right[j] to result; j++</div>
+          <div class="code-line" data-line="11">&nbsp;&nbsp;append remaining elements of left</div>
+          <div class="code-line" data-line="12">&nbsp;&nbsp;append remaining elements of right</div>
+        </div>
+
+        <div style="margin-top:14px"><strong>Python Code (for submission)</strong></div>
+        <pre class="pseudocode small" style="max-height:240px;overflow:auto">def merge_sort(arr):
+    if len(arr) <= 1:
         return arr
 
-    mid = size of arr / 2
-    left = MergeSort(arr[0:mid])
-    right = MergeSort(arr[mid:end])
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
 
-    return Merge(left, right)
+    return merge(left, right)
 
-Merge(left, right):
+
+def merge(left, right):
     result = []
-    while both left and right have elements:
-        if left[0] <= right[0]:
-            append left[0] to result
-            remove left[0]
+    i = j = 0
+
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
         else:
-            append right[0] to result
-            remove right[0]
+            result.append(right[j])
+            j += 1
 
-    append remaining elements of left
-    append remaining elements of right
-
+    result.extend(left[i:])
+    result.extend(right[j:])
     return result
-        </pre>
 
-        <h2>Time Complexity</h2>
-        <ul>
-            <li><b>Best Case:</b> O(n log n)</li>
-            <li><b>Average Case:</b> O(n log n)</li>
-            <li><b>Worst Case:</b> O(n log n)</li>
-        </ul>
+# Example
+arr = [8, 3, 5, 2, 9, 1]
+print(merge_sort(arr))</pre>
 
+        <div style="margin-top:12px" class="small"><strong>Team / Submission</strong>
+          <div>Team Members: _____</div>
+          <div>Repository: <code>yourusername.github.io/merge-sort-visualizer</code></div>
+          <div>Grading: Quality of work + Individual viva</div>
+        </div>
+
+      </aside>
     </div>
+
+    <footer>
+      Tip: You can change the initial array by editing the field in the code. Use GitHub Pages to publish (index.html in root).
+    </footer>
+  </main>
+
+  <script>
+    // ------------------------------
+    // Merge Sort Step Recorder
+    // ------------------------------
+    function recordMergeSort(arr) {
+      const steps = [];
+
+      function snapshot(action) {
+        // action: {type, arr, leftRange, rightRange, merged, temp}
+        steps.push(JSON.parse(JSON.stringify(action)));
+      }
+
+      function merge(left, right, leftIdx, rightIdx) {
+        const result = [];
+        let i = 0, j = 0;
+        snapshot({type:'merge-start', left: [...left], right: [...right], leftRange:leftIdx, rightRange:rightIdx, codeLine:6});
+        while (i < left.length && j < right.length) {
+          snapshot({type:'compare', leftVal:left[i], rightVal:right[j], leftRange:leftIdx, rightRange:rightIdx, codeLine:8});
+          if (left[i] <= right[j]) {
+            result.push(left[i]);
+            snapshot({type:'take-left', val:left[i], result:[...result], codeLine:9});
+            i++;
+          } else {
+            result.push(right[j]);
+            snapshot({type:'take-right', val:right[j], result:[...result], codeLine:10});
+            j++;
+          }
+        }
+        if (i < left.length) {
+          snapshot({type:'left-remain', remaining:left.slice(i), result:[...result], codeLine:11});
+          result.push(...left.slice(i));
+        }
+        if (j < right.length) {
+          snapshot({type:'right-remain', remaining:right.slice(j), result:[...result], codeLine:12});
+          result.push(...right.slice(j));
+        }
+        snapshot({type:'merge-done', merged:[...result], leftRange:leftIdx, rightRange:rightIdx, codeLine:5});
+        return result;
+      }
+
+      function recurse(a, start) {
+        // start: starting index in the original array
+        if (a.length <= 1) {
+          snapshot({type:'base', arr:[...a], start, end:start + a.length - 1, codeLine:1});
+          return a;
+        }
+        const mid = Math.floor(a.length / 2);
+        snapshot({type:'split', arr:[...a], start, end:start + a.length - 1, mid:start+mid-1, codeLine:2});
+        const left = recurse(a.slice(0, mid), start);
+        const right = recurse(a.slice(mid), start + mid);
+        const merged = merge(left, right, [start, start+mid-1], [start+mid, start + a.length -1]);
+        snapshot({type:'after-merge', arr:[...merged], start, end:start + a.length - 1, codeLine:5});
+        return merged;
+      }
+
+      recurse(arr, 0);
+      return steps;
+    }
+
+    // ------------------------------
+    // UI and Playback
+    // ------------------------------
+    const initialArray = [8,3,5,2,9,1];
+    let steps = recordMergeSort(initialArray);
+    let idx = 0;
+    let playing = false;
+    let playTimer = null;
+
+    const arrayArea = document.getElementById('arrayArea');
+    const mergeArea = document.getElementById('mergeArea');
+    const stepIndex = document.getElementById('stepIndex');
+    const stepTotal = document.getElementById('stepTotal');
+    const timeline = document.getElementById('timeline');
+    const speedRange = document.getElementById('speed');
+
+    function renderBaseArray(arr){
+      arrayArea.innerHTML = '';
+      for (let v of arr){
+        const el = document.createElement('div');
+        el.className = 'bar';
+        el.textContent = v;
+        arrayArea.appendChild(el);
+      }
+    }
+
+    function renderStep(s) {
+      // default: show current full array if available
+      mergeArea.innerHTML = '';
+      // highlight pseudocode
+      document.querySelectorAll('.code-line').forEach(el=>el.classList.remove('active'));
+      if (!s) return;
+      const codeLine = s.codeLine ?? null;
+      if (codeLine !== null){
+        const el = document.querySelector('.code-line[data-line="'+codeLine+'"]');
+        if (el) el.classList.add('active');
+      }
+
+      switch(s.type){
+        case 'split':
+          renderSplit(s.arr, s.start, s.end, s.mid);
+          break;
+        case 'base':
+          renderRangeHighlight(s.arr, s.start, s.end);
+          break;
+        case 'merge-start':
+          renderMergeStart(s);
+          break;
+        case 'compare':
+          renderCompare(s);
+          break;
+        case 'take-left':
+        case 'take-right':
+        case 'left-remain':
+        case 'right-remain':
+          renderMergeProgress(s);
+          break;
+        case 'merge-done':
+        case 'after-merge':
+          renderAfterMerge(s);
+          break;
+        default:
+          renderBaseArray(initialArray);
+      }
+    }
+
+    function renderSplit(arr, start, end, mid){
+      // show whole arr and mark split ranges
+      arrayArea.innerHTML = '';
+      for (let i=0;i<arr.length;i++){
+        const el = document.createElement('div');
+        el.className = 'bar';
+        el.textContent = arr[i];
+        if (i<= (mid - start)) el.classList.add('blue');
+        arrayArea.appendChild(el);
+      }
+      mergeArea.innerHTML = `<div class='small'>Split indexes: ${start}..${mid} | ${mid+1}..${end}</div>`;
+    }
+
+    function renderRangeHighlight(arr, start, end){
+      arrayArea.innerHTML = '';
+      for (let i=0;i<arr.length;i++){
+        const el = document.createElement('div');
+        el.className = 'bar';
+        el.textContent = arr[i];
+        arrayArea.appendChild(el);
+      }
+      mergeArea.innerHTML = `<div class='small'>Range: ${start}..${end}</div>`;
+    }
+
+    function renderMergeStart(s){
+      // show left and right arrays
+      arrayArea.innerHTML = '';
+      const left = s.left || [];
+      const right = s.right || [];
+      // left boxes
+      left.forEach(v=>{const el=document.createElement('div');el.className='bar blue small';el.textContent=v;arrayArea.appendChild(el)});
+      // spacer
+      const spacer = document.createElement('div');spacer.style.width='18px';arrayArea.appendChild(spacer);
+      right.forEach(v=>{const el=document.createElement('div');el.className='bar small';el.textContent=v;arrayArea.appendChild(el)});
+      mergeArea.innerHTML = `<div class='small'>Merging ranges ${s.leftRange[0]}..${s.leftRange[1]} and ${s.rightRange[0]}..${s.rightRange[1]}</div>`;
+    }
+
+    function renderCompare(s){
+      renderMergeStart(s);
+      // highlight compare values
+      const bars = Array.from(arrayArea.querySelectorAll('.bar'));
+      // left index 0 and right index after left length + spacer
+      if (bars[0]) bars[0].classList.add('highlight');
+    }
+
+    function renderMergeProgress(s){
+      // show result building in mergeArea
+      mergeArea.innerHTML = '';
+      const tempBox = document.createElement('div');
+      tempBox.style.display='flex';tempBox.style.gap='8px';
+      (s.result || []).forEach(v=>{const e=document.createElement('div');e.className='bar small';e.textContent=v;tempBox.appendChild(e)});
+      mergeArea.appendChild(tempBox);
+      // also show source arrays simplified
+      const src = document.createElement('div');src.className='small';src.style.marginTop='8px';src.textContent = 'Operation: '+s.type + (s.val?(' → '+s.val):'');
+      mergeArea.appendChild(src);
+    }
+
+    function renderAfterMerge(s){
+      // show merged array placed back at start..end
+      arrayArea.innerHTML = '';
+      const totalLen = s.end - s.start + 1;
+      (s.arr || s.merged || []).forEach(v=>{const el=document.createElement('div');el.className='bar';el.textContent=v;arrayArea.appendChild(el)});
+      mergeArea.innerHTML = `<div class='small'>Placed merged array at indexes ${s.start}..${s.end}</div>`;
+    }
+
+    function renderTimeline(){
+      timeline.innerHTML='';
+      const total = steps.length;
+      for (let i=0;i<total;i++){
+        const pill = document.createElement('div');pill.className='step-pill';pill.textContent=i+1; if (i===idx) pill.style.background='#ffe6f5';
+        pill.addEventListener('click',()=>{pause(); goTo(i)});
+        timeline.appendChild(pill);
+      }
+    }
+
+    function updateStepInfo(){
+      stepIndex.textContent = idx+1;
+      stepTotal.textContent = steps.length;
+      renderTimeline();
+    }
+
+    function goTo(i){
+      if (i<0) i=0; if (i>=steps.length) i=steps.length-1; idx=i; renderStep(steps[idx]); updateStepInfo();
+    }
+
+    function next(){ if (idx < steps.length-1) goTo(idx+1); else pause(); }
+    function prev(){ if (idx>0) goTo(idx-1); }
+
+    function play(){ if (playing) return; playing=true; document.getElementById('btnPlay').textContent='Pause ⏸';
+      const tick = ()=>{
+        const delay = parseInt(speedRange.value);
+        next();
+        if (playing && idx < steps.length-1) playTimer = setTimeout(tick, delay);
+        else playing=false, document.getElementById('btnPlay').textContent='Play ▶';
+      };
+      playTimer = setTimeout(tick, 120);
+    }
+    function pause(){ if (playTimer) clearTimeout(playTimer); playing=false; document.getElementById('btnPlay').textContent='Play ▶'; }
+
+    function reset(){ pause(); idx=0; steps = recordMergeSort(initialArray); goTo(0); }
+
+    // setup handlers
+    document.getElementById('btnNext').addEventListener('click', ()=>{ pause(); next(); });
+    document.getElementById('btnPrev').addEventListener('click', ()=>{ pause(); prev(); });
+    document.getElementById('btnPlay').addEventListener('click', ()=>{ if(playing) pause(); else play(); });
+    document.getElementById('btnReset').addEventListener('click', ()=>{ reset(); });
+
+    // initialize
+    renderBaseArray(initialArray);
+    renderTimeline();
+    updateStepInfo();
+    goTo(0);
+
+    // accessibility: keyboard controls
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'ArrowRight') { pause(); next(); }
+      if (e.key === 'ArrowLeft') { pause(); prev(); }
+      if (e.key === ' ') { e.preventDefault(); if (playing) pause(); else play(); }
+    });
+  </script>
 </body>
 </html>
