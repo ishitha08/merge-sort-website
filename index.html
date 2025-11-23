@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Merge Sort Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fdeaff; /* pastel pink */
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(90deg, #ffd6ff, #caffff); /* pastel pink + blue */
+            padding: 30px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4b4b4b;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+        h2 {
+            color: #555;
+        }
+        .array-box {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .elem {
+            background: #ffe8f8; /* pastel box */
+            border: 2px solid #ffb3e6;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .split {
+            border-color: #b3e6ff;
+            background: #e8f8ff;
+        }
+        pre {
+            background: #fff0fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ffd0ef;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>Merge Sort Algorithm</header>
+    <div class="container">
+        <h2>What is Merge Sort?</h2>
+        <p>Merge Sort is a <b>Divide and Conquer</b> algorithm that splits an array into smaller halves, sorts them individually, and then merges them back together. It is efficient and stable with a time complexity of <b>O(n log n)</b>.</p>
+
+        <h2>Visualization</h2>
+        <p>Example array being sorted:</p>
+
+        <div class="array-box">
+            <div class="elem">8</div>
+            <div class="elem">3</div>
+            <div class="elem">5</div>
+            <div class="elem">2</div>
+            <div class="elem">9</div>
+            <div class="elem">1</div>
+        </div>
+
+        <p>After splitting (Divide step):</p>
+        <div class="array-box">
+            <div class="elem split">8</div>
+            <div class="elem split">3</div>
+            <div class="elem split">5</div>
+            <div class="elem split">2</div>
+            <div class="elem split">9</div>
+            <div class="elem split">1</div>
+        </div>
+
+        <h2>Pseudocode</h2>
+        <pre>
+MergeSort(arr):
+    if size of arr <= 1:
+        return arr
+
+    mid = size of arr / 2
+    left = MergeSort(arr[0:mid])
+    right = MergeSort(arr[mid:end])
+
+    return Merge(left, right)
+
+Merge(left, right):
+    result = []
+    while both left and right have elements:
+        if left[0] <= right[0]:
+            append left[0] to result
+            remove left[0]
+        else:
+            append right[0] to result
+            remove right[0]
+
+    append remaining elements of left
+    append remaining elements of right
+
+    return result
+        </pre>
+
+        <h2>Time Complexity</h2>
+        <ul>
+            <li><b>Best Case:</b> O(n log n)</li>
+            <li><b>Average Case:</b> O(n log n)</li>
+            <li><b>Worst Case:</b> O(n log n)</li>
+        </ul>
+
+    </div>
+</body>
+</html>
